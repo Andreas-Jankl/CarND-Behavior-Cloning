@@ -1,4 +1,4 @@
-#The Project
+# The Project
 ---
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior 
@@ -6,6 +6,15 @@ The goals / steps of this project are the following:
 * Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
 * Summarize the results with a written report
 
+# Result
+---
+
+<script src="http://vjs.zencdn.net/4.0/video.js"></script>
+<video id="pelican-installation" class="video-js vjs-default-skin" controls
+preload="auto" width="683" height="384" poster="result.png"
+data-setup="{}">
+<source src="Video_of_result.mp4" type='video/mp4'>
+</video>
 
 # Question 1
 
