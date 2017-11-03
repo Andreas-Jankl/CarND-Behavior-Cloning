@@ -1,5 +1,5 @@
 # The Project
----
+
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior 
 * Design, train and validate a model that predicts a steering angle from image data
@@ -7,7 +7,6 @@ The goals / steps of this project are the following:
 * Summarize the results with a written report
 
 # Result
----
 
 [Video](https://raw.githubusercontent.com/Andreas-Jankl/CarND-Behavior-cloning/master/Video_of_result.mp4)
 
