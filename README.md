@@ -1,35 +1,4 @@
-# Behaviorial Cloning Project
-
-[![Udacity - Self-Driving Car NanoDegree](https://s3.amazonaws.com/udacity-sdc/github/shield-carnd.svg)](http://www.udacity.com/drive)
-
-Overview
----
-This repository contains starting files for the Behavioral Cloning Project.
-
-In this project, you will use what you've learned about deep neural networks and convolutional neural networks to clone driving behavior. You will train, validate and test a model using Keras. The model will output a steering angle to an autonomous vehicle.
-
-We have provided a simulator where you can steer a car around a track for data collection. You'll use image data and steering angles to train a neural network and then use this model to drive the car autonomously around the track.
-
-We also want you to create a detailed writeup of the project. Check out the [writeup template](https://github.com/udacity/CarND-Behavioral-Cloning-P3/blob/master/writeup_template.md) for this project and use it as a starting point for creating your own writeup. The writeup can be either a markdown file or a pdf document.
-
-To meet specifications, the project will require submitting five files: 
-* model.py (script used to create and train the model)
-* drive.py (script to drive the car - feel free to modify this file)
-* model.h5 (a trained Keras model)
-* a report writeup file (either markdown or pdf)
-* video.mp4 (a video recording of your vehicle driving autonomously around the track for at least one full lap)
-
-This README file describes how to output the video in the "Details About Files In This Directory" section.
-
-Creating a Great Writeup
----
-A great writeup should include the [rubric points](https://review.udacity.com/#!/rubrics/432/view) as well as your description of how you addressed each point.  You should include a detailed description of the code used (with line-number references and code snippets where necessary), and links to other supporting documents or external references.  You should include images in your writeup to demonstrate how your code works with examples.  
-
-All that said, please be concise!  We're not looking for you to write a book here, just a brief description of how you passed each rubric point, and references to the relevant code :). 
-
-You're not required to use markdown for your writeup.  If you use another method please just submit a pdf of your writeup.
-
-The Project
+#The Project
 ---
 The goals / steps of this project are the following:
 * Use the simulator to collect data of good driving behavior 
@@ -37,86 +6,108 @@ The goals / steps of this project are the following:
 * Use the model to drive the vehicle autonomously around the first track in the simulator. The vehicle should remain on the road for an entire loop around the track.
 * Summarize the results with a written report
 
-### Dependencies
-This lab requires:
 
-* [CarND Term1 Starter Kit](https://github.com/udacity/CarND-Term1-Starter-Kit)
+# Question 1
 
-The lab enviroment can be created with CarND Term1 Starter Kit. Click [here](https://github.com/udacity/CarND-Term1-Starter-Kit/blob/master/README.md) for the details.
+-The README thoroughly discusses the approach taken for deriving and designing a model architecture fit for solving the given problem.
 
-The following resources can be found in this github repository:
-* drive.py
-* video.py
-* writeup_template.md
+> **Prerequesites**
+>
+>-  A model needs to use convolutional layers since it needs to do image processing
+> - The output layer needs to have size 1 meaning it puts out the steering angle.
+> - The loss for learning needs to be defined as as mean squared error between the steering angle predicted and the steering angle from the data sets.
 
-The simulator can be downloaded from the classroom. In the classroom, we have also provided sample data that you can optionally use to help train your model.
 
-## Details About Files In This Directory
+> **I have tried 3 approaches for this problem**
 
-### `drive.py`
+> - Transfer learning using a vgg16 network as basis
+> - A model inspired by comma.ai using 3 convolution and 1 dense layer
+> - A model incorporating the learnings from the first two tries plus learnings from the slack and confluence comunity posts
 
-Usage of `drive.py` requires you have saved the trained model as an h5 file, i.e. `model.h5`. See the [Keras documentation](https://keras.io/getting-started/faq/#how-can-i-save-a-keras-model) for how to create this file using the following command:
+**Try 1**
+For try 1 the base layers of a vgg16 network are being used with which bottleneck features are being calculated. Only the convolutional layers with their imagenet trained weights are being used for the bottleneck data calculation. With the bottleneck data a number of new layers = top model are being trained which shall reside on top of the vgg network. The output of the top layers is a single output with a linear activation function which shall be the steering angle which shall be set
+
+> **End result:** This model was found to need a very very long time to calculate the bootleneck data. I ended up giving up for another architecture since it was too complex for the task.
+
+**Try 2**
+The model was inspired by this: https://github.com/commaai/research/blob/master/train_steering_model.py However even with a lot of data I could not make the model run through the hard turns. 
+
+I did try the following data with different sizes of the data sets and hyper parameters:
+>- Using only the center images + recovery recording
+>- Using the left/right images adding and subtracting 0.25 from the steering angle
+>- I did not do any preprocessing or augmenting of the data
+
+Finally I concluded the following:
+
+> **End result:** The model is underfitting the data significantly because there were to little Dense layers. In fact there are 3 convolutional layers and only 1 Dense layer. Howeve the fact that I did not preprocess the data and therefore the model had a lot of parameters to be trained lead to the poorer results.
+
+**Try 3**
+With the learnings + hints from the students posting their models and their hints in confluence and slack particularily this https://github.com/dyelax/CarND-Behavioral-Cloning I came up with the last model which has 4 convolutational layers and 4 dense layers.
+
+> **End result:** This model finally is able to fit the data. The reason for it being able to fit the data is in the increased number of layers compared to try 2. Additionally I am now preprocessing and augmenting the data (See below)
+
+
+# Question 3
+
+The README provides sufficient details of the characteristics and qualities of the architecture, such as the type of model used, the number of layers, the size of each layer. Visualizations emphasizing particular qualities of the architecture are encouraged.
+
+Code snippet:
 ```sh
-model.save(filepath)
+	model = Sequential()
+	model.add(Conv2D(32, 3, 3,input_shape=(row_new, col_new, ch_new),border_mode='same', activation='relu'))
+	model.add(Conv2D(64, 3, 3,border_mode='same', activation='relu'))
+	model.add(Dropout(.5))
+	model.add(Conv2D(128, 3, 3,border_mode='same', activation='relu'))
+	model.add(Conv2D(256, 3, 3,border_mode='same', activation='relu'))
+	model.add(Dropout(.5))
+	model.add(Flatten())
+	model.add(Dense(1024,activation='relu'))
+	model.add(Dense(512,activation='relu'))
+	model.add(Dense(128,activation='relu'))
+	model.add(Dense(1, name='output', activation='tanh'))
 ```
+	
+>- 4 convolutational layers are being used which detect increasingly complex structures in the images
+>- Twice dropout is being applied to avoid overfitting
+>- 4 Dense layers with decreasing size are being added
+>- All layers are using a relu activation except for the last one which uses a tanh activation which keeps the steering angle in [-1,1]
 
-Once the model has been saved, it can be used with drive.py using this command:
+# Question 3
 
-```sh
-python drive.py model.h5
+The README describes how the model was trained and what the characteristics of the dataset are. Information such as how the dataset was generated and examples of images from the dataset should be included.
+
+**The dataset was derived as follows:**
+>- 6 rounds of center line driving was recorded
+>- 4 round of repeatedly placing the vehicle at the left/side side of the road without recording and then recording the part where I steer the vehicle back in the middle was recorded
+>- Everything was recorded on track 1
+>- Only the center images where being taken
+>- I ended up having approx 20k images
+>- Unfortunately I used the keyboard only controls which makes up very weird steering angles and the 10Hz Simulator
+
+**Traing was done as follows:**
+>- I trained for 4 epochs with an adam optimizer and a mean squared error as loss definition. I tried different number of epochs. 4 was chosen as every number below ended in being underfitting and every higher number ended in overfitting
+>- I used the a batch size of 128. Lower numbers tended to overfit the model
+>- I used a learning rate of 0.0001 which is lower than the standard adam optimizer learning rate which lead to better results
+>- I did use a generator as required in order to avoid the need to keep the data in memory.
+>- The data was shuffled and split into training and validation data set. Testing was done with the simulator itself so not testing dataset was derived.
+>- In the batch generation the data is being preprocess as follows:
+```flow
+st=>start: Start
+op1=>operation: Resize
+op2=>operation: Convert to grayscale
+op3=>operation: Normalize [-1,1]
+
+st->op1->op2->op3->e
 ```
+>- The batch generation itself works as follows:
+```flow
+st=>start: Start
+op1=>operation: Get random indices
+op2=>operation: Read in images with given indices
+op3=>operation: Augment data
 
-The above command will load the trained model and use the model to make predictions on individual images in real-time and send the predicted angle back to the server via a websocket connection.
-
-Note: There is known local system's setting issue with replacing "," with "." when using drive.py. When this happens it can make predicted steering values clipped to max/min values. If this occurs, a known fix for this is to add "export LANG=en_US.utf8" to the bashrc file.
-
-#### Saving a video of the autonomous agent
-
-```sh
-python drive.py model.h5 run1
+st->op1->op2->op3->e
 ```
-
-The fourth argument, `run1`, is the directory in which to save the images seen by the agent. If the directory already exists, it'll be overwritten.
-
-```sh
-ls run1
-
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_424.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_451.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_477.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_528.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_573.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_618.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_697.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_723.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_749.jpg
-[2017-01-09 16:10:23 EST]  12KiB 2017_01_09_21_10_23_817.jpg
-...
-```
-
-The image file name is a timestamp of when the image was seen. This information is used by `video.py` to create a chronological video of the agent driving.
-
-### `video.py`
-
-```sh
-python video.py run1
-```
-
-Creates a video based on images found in the `run1` directory. The name of the video will be the name of the directory followed by `'.mp4'`, so, in this case the video will be `run1.mp4`.
-
-Optionally, one can specify the FPS (frames per second) of the video:
-
-```sh
-python video.py run1 --fps 48
-```
-
-Will run the video at 48 FPS. The default FPS is 60.
-
-#### Why create a video
-
-1. It's been noted the simulator might perform differently based on the hardware. So if your model drives succesfully on your machine it might not on another machine (your reviewer). Saving a video is a solid backup in case this happens.
-2. You could slightly alter the code in `drive.py` and/or `video.py` to create a video of what your model sees after the image is processed (may be helpful for debugging).
-
-## How to write a README
-A well written README file can enhance your project and portfolio.  Develop your abilities to create professional README files by completing [this free course](https://www.udacity.com/course/writing-readmes--ud777).
-
+>- The augmentation does random horizontal flipping of the images. I do this because the track is very scewed with curves mostly in one direction. In order to avoid a scewed model this technique is being used.
+>- Resizing the images and using gray scale only was being chosen at it reduced the paramters and thus training time significantly while the model was still able to fit the data.
+>- I ended up training the model and then once I had a generally running model I did refine the working model with data at the places where the car fell of track. Whether the model.py script does full training or refining is being controlled by flag in the code.
