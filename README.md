@@ -9,12 +9,7 @@ The goals / steps of this project are the following:
 # Result
 ---
 
-<script src="http://vjs.zencdn.net/4.0/video.js"></script>
-<video id="pelican-installation" class="video-js vjs-default-skin" controls
-preload="auto" width="683" height="384" poster="result.png"
-data-setup="{}">
-<source src="Video_of_result.mp4" type='video/mp4'>
-</video>
+[Video](https://raw.githubusercontent.com/Andreas-Jankl/CarND-Behavior-cloning/master/Video_of_result.mp4)
 
 # Question 1
 
