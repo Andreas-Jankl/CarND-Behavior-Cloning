@@ -3,8 +3,8 @@
 > In this project one is being given a simulator that much resembles a car racing video game. It can be accessed here https://github.com/udacity/self-driving-car-sim. 
 
 * The simulator has a manual and an automatic mode. 
-** In the manual mode the user must drive the car. 
-** In the automatic mode an external software component can send steering and throttle commands to the simulator controlling the car.
+* In the manual mode the user must drive the car. 
+* In the automatic mode an external software component can send steering and throttle commands to the simulator controlling the car.
 * One can collect data when driving in manual mode.
 * In collecting data the user generates .jpg image files and .csv files. The images are the the images collected by virtual cameras mounted on the car. The .csv collects the according telemetry data like the steering angle
 
