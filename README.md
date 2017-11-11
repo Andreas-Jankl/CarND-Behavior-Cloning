@@ -2,12 +2,15 @@
 
 > In this project one is being given a simulator that much resembles a car racing video game. It can be accessed here https://github.com/udacity/self-driving-car-sim. 
 
-* The simulator has a manual and a automatic mode. 
+* The simulator has a manual and an automatic mode. 
 ** In the manual mode the user must drive the car. 
 ** In the automatic mode an external software component can send steering and throttle commands to the simulator controlling the car.
 * One can collect data when driving in manual mode.
 * In collecting data the user generates .jpg image files and .csv files. The images are the the images collected by virtual cameras mounted on the car. The .csv collects the according telemetry data like the steering angle
-* Data collection and the data collected are shown below
+
+> **The goal of the project is to derive a model that is able to take as inputs only the .jpg files generated from the simulator. Given only those images it should derive a steering angle that will lead to the vehicle in the simulator driving the track without dropping off**
+
+Data collection and the data collected are shown below
 
 Image data collected
 ![png](input_data.png)
@@ -17,12 +20,7 @@ Telemetry data collected
 
 [Video of simulator at data collection](https://raw.githubusercontent.com/Andreas-Jankl/CarND-Behavior-cloning/master/DataCollection.mp4)
 
-> **Prerequesites**
-
-
 # Goals and steps of the project
-
-> **The goal of the project is to derive a model that is able to take as inputs only the .jpg files generated from the simulator. Given only those images it should derive a steering angle that will lead to the vehicle in the simulator driving the track without dropping off**
 
 Therefore we need to do the following:
 
